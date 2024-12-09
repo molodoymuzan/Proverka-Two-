@@ -14,10 +14,9 @@ This project is explained in this [tutorial].
 
 ```sql
 CREATE TABLE users (
-  userid SERIAL PRIMARY KEY,
-  name TEXT,
-  age INT,
-  location TEXT
+    user_id SERIAL PRIMARY KEY,
+    name TEXT NOT NULL UNIQUE,
+    Password TEXT NOT NULL
 );
 ```
 

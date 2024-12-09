@@ -8,4 +8,10 @@ function checkLoginStatus() {
     }
 }
 
+function logout() {
+    localStorage.removeItem('userId')
+    window.location.href = 'login.html';
+}
+
 document.addEventListener("DOMContentLoaded", checkLoginStatus);
+document.querySelector("#logout").addEventListener("click", logout);

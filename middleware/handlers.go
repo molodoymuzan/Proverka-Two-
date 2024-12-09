@@ -78,25 +78,25 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 // GetUser will return a single user by its id
 func GetUser(w http.ResponseWriter, r *http.Request) {
-	// get the userid from the request params, key is "id"
-	params := mux.Vars(r)
+	// create an empty user of type models.User
+	var user models.User
 
-	// convert the id type from string to int
-	id, err := strconv.Atoi(params["id"])
+	// decode the json request to user
+	err := json.NewDecoder(r.Body).Decode(&user)
 
 	if err != nil {
 		log.Fatalf("Unable to convert the string into int.  %v", err)
 	}
 
-	// call the getUser function with user id to retrieve a single user
-	user, err := getUser(int64(id))
+	// call the getUser function with user name to retrieve a single user
+	id, err := getUser(user)
 
 	if err != nil {
 		log.Fatalf("Unable to get user. %v", err)
 	}
 
 	// send the response
-	json.NewEncoder(w).Encode(user)
+	json.NewEncoder(w).Encode(id)
 }
 
 // GetAllUser will return all the users
@@ -193,14 +193,14 @@ func insertUser(user models.User) int64 {
 
 	// create the insert sql query
 	// returning userid will return the id of the inserted user
-	sqlStatement := `INSERT INTO users (name, location, age) VALUES ($1, $2, $3) RETURNING user_id`
+	sqlStatement := `INSERT INTO users (name, password) VALUES ($1, $2) RETURNING user_id`
 
 	// the inserted id will store in this id
 	var id int64
 
 	// execute the sql statement
 	// Scan function will save the insert id in the id
-	err := db.QueryRow(sqlStatement, user.Name, user.Location, user.Age).Scan(&id)
+	err := db.QueryRow(sqlStatement, user.Name, user.Password).Scan(&id)
 
 	if err != nil {
 		log.Fatalf("Unable to execute the query. %v", err)
@@ -213,37 +213,23 @@ func insertUser(user models.User) int64 {
 }
 
 // get one user from the DB by its userid
-func getUser(id int64) (models.User, error) {
+func getUser(user models.User) (int64, error) {
+	var id int64
+	
 	// create the postgres db connection
 	db := createConnection()
 
 	// close the db connection
 	defer db.Close()
 
-	// create a user of models.User type
-	var user models.User
-
 	// create the select sql query
-	sqlStatement := `SELECT * FROM users WHERE userid=$1`
+	sqlStatement := `SELECT user_id FROM users WHERE name=$1 AND password=$2`
 
 	// execute the sql statement
-	row := db.QueryRow(sqlStatement, id)
-
-	// unmarshal the row object to user
-	err := row.Scan(&user.ID, &user.Name, &user.Age, &user.Location)
-
-	switch err {
-	case sql.ErrNoRows:
-		fmt.Println("No rows were returned!")
-		return user, nil
-	case nil:
-		return user, nil
-	default:
-		log.Fatalf("Unable to scan the row. %v", err)
-	}
+	err := db.QueryRow(sqlStatement, user.Name, user.Password).Scan(&id)
 
 	// return empty user on error
-	return user, err
+	return id, err
 }
 
 // get one user from the DB by its userid
@@ -274,7 +260,7 @@ func getAllUsers() ([]models.User, error) {
 		var user models.User
 
 		// unmarshal the row object to user
-		err = rows.Scan(&user.ID, &user.Name, &user.Age, &user.Location)
+		err = rows.Scan(&user.ID, &user.Name, &user.Password)
 
 		if err != nil {
 			log.Fatalf("Unable to scan the row. %v", err)
@@ -302,7 +288,7 @@ func updateUser(id int64, user models.User) int64 {
 	sqlStatement := `UPDATE users SET name=$2, location=$3, age=$4 WHERE userid=$1`
 
 	// execute the sql statement
-	res, err := db.Exec(sqlStatement, id, user.Name, user.Location, user.Age)
+	res, err := db.Exec(sqlStatement, id, user.Name, user.Password)
 
 	if err != nil {
 		log.Fatalf("Unable to execute the query. %v", err)
