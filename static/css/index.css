@@ -1,0 +1,133 @@
+/* static/css/styles.css */
+
+:root {
+    --primary-color: #4caf50; /* Green */
+    --secondary-color: #f5f5f5; /* Light Gray */
+    --text-color: #333; /* Dark Gray */
+    --shadow-color: rgba(0, 0, 0, 0.1); /* Shadow */
+    --border-radius: 10px; /* Border Radius */
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: var(--secondary-color);
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    background: var(--primary-color);
+    color: #ffffff;
+    padding: 20px 0;
+    text-align: center;
+
+    position: relative;
+}
+
+.header .btn{
+    position: absolute;
+    top: 50%;
+    right: 60px;
+    box-shadow: 0 0 30px 5px var(--shadow-color);
+    font-size: 1rem;
+
+    transform: translate(0, -50%);
+}
+
+.main-content {
+    max-width: 800px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #ffffff;
+    border-radius: var(--border-radius);
+    box-shadow: 0 0 10px var(--shadow-color);
+}
+
+.month-display {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.circle, .inner-circle {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ffffff;
+    font-size: 1.5rem;
+}
+
+.circle .inner-circle {
+    width: 130px;
+    height: 130px;
+    border-radius: 50%;
+    background: #ffffff;
+    color: var(--primary-color);
+}
+
+.transactions-section, .add-transaction-section {
+    margin-top: 20px;
+}
+
+h2 {
+    color: var(--text-color);
+}
+
+.transaction-list {
+    list-style-type: none;
+    padding: 0;
+}
+
+.transaction-list li {
+    padding: 10px;
+    border-bottom: 1px solid #ccc;
+}
+
+.transaction-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+label {
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+input[type="number"],
+input[type="text"],
+input[type="month"],
+select,
+textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: var(--border-radius);
+    width: 100%;
+    box-sizing: border-box;
+}
+
+textarea {
+    resize: vertical;
+}
+
+.btn {
+    padding: 10px;
+    background: var(--primary-color);
+    color: #ffffff;
+    border: none;
+    border-radius: var(--border-radius);
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.btn:hover {
+    background: #388e3c; /* Darker shade of green for hover effect */
+}
