@@ -193,7 +193,7 @@ func insertUser(user models.User) int64 {
 
 	// create the insert sql query
 	// returning userid will return the id of the inserted user
-	sqlStatement := `INSERT INTO users (name, location, age) VALUES ($1, $2, $3) RETURNING userid`
+	sqlStatement := `INSERT INTO users (name, location, age) VALUES ($1, $2, $3) RETURNING user_id`
 
 	// the inserted id will store in this id
 	var id int64
