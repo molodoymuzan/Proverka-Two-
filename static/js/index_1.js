@@ -1,4 +1,3 @@
-
 function checkLoginStatus() {
     const userId = localStorage.getItem('userId');
 
@@ -7,21 +6,44 @@ function checkLoginStatus() {
         return;
     }
 }
-
 function logout() {
     localStorage.removeItem('userId')
     window.location.href = 'login.html';
 }
+async function fetchUserData() {
+    // Get user ID from local storage
+    const userId = localStorage.getItem('userId'); // Make sure 'userId' is set in local storage
+
+    if (!userId) {
+        console.error("User ID not found in local storage.");
+        return;
+    }
+
+    try {
+        const response = await fetch(`/api/user/${userId}`, {
+            method: 'PUT', // Use PUT as specified in your router
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const userData = await response.json();
+        // Assuming the user data contains a 'name' field
+        document.getElementById('user-name').textContent = userData.name || 'User';
+
+
+    } catch (error) {
+        console.error('Error fetching user data:', error);
+    }
+}
+
 
 document.addEventListener("DOMContentLoaded", checkLoginStatus);
-document.querySelector("#logout").addEventListener("click", logout);
-
-
-
-
-const transactionList = document.getElementById("transaction-list");
-const transactionForm = document.getElementById("transaction-form");
-
+document.addEventListener("DOMContentLoaded", fetchUserData);
 document.addEventListener("DOMContentLoaded", function() {
     transactionForm.addEventListener("submit", async function(event) {
         event.preventDefault(); // Prevent the default form submission
@@ -68,3 +90,11 @@ document.addEventListener("DOMContentLoaded", function() {
         transactionList.appendChild(listItem);
     }
 });
+document.querySelector("#logout").addEventListener("click", logout);
+
+
+
+
+const transactionList = document.getElementById("transaction-list");
+const transactionForm = document.getElementById("transaction-form");
+

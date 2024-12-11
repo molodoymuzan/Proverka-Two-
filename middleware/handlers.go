@@ -79,6 +79,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 // GetUser will return a single user by its id
 func GetUser(w http.ResponseWriter, r *http.Request) {
 	// create an empty user of type models.User
+	var id int64
 	var user models.User
 
 	// decode the json request to user
@@ -88,8 +89,11 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 		log.Fatalf("Unable to convert the string into int.  %v", err)
 	}
 
-	// call the getUser function with user name to retrieve a single user
-	id, err := getUser(user)
+	db := createConnection()
+	defer db.Close()
+
+	sqlStatement := `SELECT user_id FROM users WHERE name=$1 AND password=$2`
+	err = db.QueryRow(sqlStatement, user.Name, user.Password).Scan(&id)
 
 	if err != nil {
 		log.Fatalf("Unable to get user. %v", err)
@@ -97,6 +101,37 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 
 	// send the response
 	json.NewEncoder(w).Encode(id)
+}
+
+func GetUserById(w http.ResponseWriter, r *http.Request) {
+	var user models.User
+
+	vars := mux.Vars(r)
+	idStr := vars["id"]
+
+	id, err := strconv.ParseInt(idStr, 10, 64)
+	if err != nil {
+		http.Error(w, "Invalid user ID", http.StatusBadRequest)
+		return
+	}
+
+	db := createConnection()
+	defer db.Close()
+
+	sqlStatement := `SELECT name FROM users WHERE user_id=$1`
+
+	err = db.QueryRow(sqlStatement, id).Scan(&user.Name)
+	fmt.Print(user)
+	fmt.Print(err)
+	fmt.Print(err)
+	if err != nil {
+		http.Error(w, "User not found", http.StatusNotFound)
+		return
+	}
+
+	// Send the response
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(user)
 }
 
 func AddTransaction(w http.ResponseWriter, r *http.Request) {
@@ -237,26 +272,6 @@ func insertUser(user models.User) int64 {
 
 	// return the inserted id
 	return id
-}
-
-// get one user from the DB by its userid
-func getUser(user models.User) (int64, error) {
-	var id int64
-
-	// create the postgres db connection
-	db := createConnection()
-
-	// close the db connection
-	defer db.Close()
-
-	// create the select sql query
-	sqlStatement := `SELECT user_id FROM users WHERE name=$1 AND password=$2`
-
-	// execute the sql statement
-	err := db.QueryRow(sqlStatement, user.Name, user.Password).Scan(&id)
-
-	// return empty user on error
-	return id, err
 }
 
 // get one user from the DB by its userid

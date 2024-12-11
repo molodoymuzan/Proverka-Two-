@@ -22,7 +22,7 @@ function handleLogin() {
 
             const result = await response.json();
             if (response.ok) {
-                localStorage.setItem("userId", result.id);
+                localStorage.setItem("userId", result);
                 window.location.href = "/"; // Change to your main page
             } else {
                 // Handle errors (e.g., invalid credentials)
