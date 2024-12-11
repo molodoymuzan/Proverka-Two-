@@ -14,5 +14,5 @@ type Transaction struct {
 	Type        string  `json:"type"`
 	Category    string  `json:"category"`
 	Description string  `json:"description"`
-	Date        string  `json:"date"` // Можно использовать тип date, если нужно
+	Date        string  `json:"date"`
 }

@@ -19,7 +19,7 @@ func Router() *mux.Router {
 	router.HandleFunc("/api/transaction/add", middleware.AddTransaction).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/transaction/get", middleware.GetTransaction).Methods("POST", "OPTIONS")
 	router.HandleFunc("/api/transaction/delete", middleware.DeleteTransaction).Methods("POST", "OPTIONS")
-	// --------------
+	// ---- Unused ----
 	//router.HandleFunc("/api/user", middleware.GetAllUser).Methods("GET", "OPTIONS")
 	//router.HandleFunc("/api/deleteuser/{id}", middleware.DeleteUser).Methods("DELETE", "OPTIONS")
 
