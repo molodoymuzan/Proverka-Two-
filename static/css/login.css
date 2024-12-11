@@ -1,4 +1,4 @@
-/* static/css/styles.css */
+static/css/styles.css
 
 :root {
     --primary-color: #4caf50; /* Green */
@@ -60,4 +60,11 @@ button {
 
 button:hover {
     background: #388e3c; /* Darker shade of green for hover effect */
+}
+
+a {
+    margin: 10px 0;
+    font-size: 1.2rem;
+    text-decoration: none;
+    color: var(--primary-color);
 }

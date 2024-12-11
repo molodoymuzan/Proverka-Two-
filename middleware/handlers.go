@@ -146,7 +146,7 @@ func AddTransaction(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
 	}
-	fmt.Print(transaction)
+
 	_, err = db.Exec("INSERT INTO transactions (user_id, amount, type, category, description, date) VALUES ($1, $2, $3, $4, $5, $6)",
 		transaction.UserID, transaction.Amount, transaction.Type, transaction.Category, transaction.Description, transaction.Date)
 
@@ -165,7 +165,6 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 	transactions := []models.Transaction{}
 
 	err := json.NewDecoder(r.Body).Decode(&user)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -174,35 +173,51 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 	db := createConnection()
 	defer db.Close()
 
-	query := `SELECT amount, type, category, description, date FROM transactions WHERE user_id = $1`
+	query := `SELECT id, amount, type, category, description, date FROM transactions WHERE user_id = $1`
 	rows, err := db.Query(query, user.ID)
-
-	fmt.Print(user.ID)
-	fmt.Print(rows)
-
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
-	
+	defer rows.Close()
 
 	for rows.Next() {
         var transaction models.Transaction
-		err := rows.Scan(&transaction.UserID, &transaction.Amount, &transaction.Type, &transaction.Category, &transaction.Description, &transaction.Date);
-        
+		err := rows.Scan(&transaction.ID, &transaction.Amount, &transaction.Type, &transaction.Category, &transaction.Description, &transaction.Date);
+
 		if err != nil {
             http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
         }
-		defer rows.Close()
 
         transactions = append(transactions, transaction)
     }
-
 	json.NewEncoder(w).Encode(transactions)
 }
 
-// GetAllUser will return all the users
+func DeleteTransaction(w http.ResponseWriter, r *http.Request) {
+	var transaction models.Transaction
+
+	err := json.NewDecoder(r.Body).Decode(&transaction)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	
+	db := createConnection()
+	defer db.Close()
+
+	query := `DELETE FROM transactions where id = $1`
+	_, err = db.Exec(query, transaction.ID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent)
+}
+
+
 func GetAllUser(w http.ResponseWriter, r *http.Request) {
 
 	// get all the users in the db

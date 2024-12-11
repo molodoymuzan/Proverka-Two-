@@ -44,8 +44,8 @@ async function fetchUserData() {
 
 document.addEventListener("DOMContentLoaded", checkLoginStatus);
 document.addEventListener("DOMContentLoaded", fetchUserData);
-document.addEventListener("DOMContentLoaded", function() {
-    transactionForm.addEventListener("submit", async function(event) {
+document.addEventListener("DOMContentLoaded", function () {
+    transactionForm.addEventListener("submit", async function (event) {
         event.preventDefault(); // Prevent the default form submission
 
         const id = +localStorage.getItem("userId");
@@ -76,7 +76,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
             const result = await response.json();
             // Add the new transaction to the list
-            addTransactionToList(result);
+            displayTransactions(result);
             // Reset the form
             transactionForm.reset();
         } catch (error) {
@@ -97,50 +97,88 @@ document.querySelector("#logout").addEventListener("click", logout);
 
 
 
-const transactionList = document.getElementById("transaction-list");
+const tableBody = document.getElementById('transaction-list');
 const transactionForm = document.getElementById("transaction-form");
 
 
 
-function fetchTransactions(userId) {
-    const id = +localStorage.getItem("userId") 
+function fetchTransactions() {
+    const id = +localStorage.getItem("userId")
 
     fetch('/api/transaction/get', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({id: id})
+        body: JSON.stringify({ id: id })
     })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(transactions => {
-        displayTransactions(transactions);
-    })
-    .catch(error => {
-        console.error('There was a problem with the fetch operation:', error);
-    });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(transactions => {
+            displayTransactions(transactions);
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
 }
 
-// Function to display transactions in the transaction list
-function displayTransactions(transactions) {
-    const transactionList = document.getElementById('transaction-list');
-    transactionList.innerHTML = ''; // Clear existing transactions
 
-    transactions.forEach(transaction => {
-        const transactionItem = document.createElement('div');
-        transactionItem.className = 'transaction-item';
-        transactionItem.innerHTML = `
-            <p><strong>Amount:</strong> ${transaction.amount}</p>
-            <p><strong>Type:</strong> ${transaction.type}</p>
-            <p><strong>Category:</strong> ${transaction.category}</p>
-            <p><strong>Description:</strong> ${transaction.description}</p>
-            <p><strong>Date:</strong> ${transaction.date}</p>
+function displayTransactions(transactions) {
+    transactions.forEach(item => {
+        const row = document.createElement('tr');
+
+        row.id = item.id
+        row.innerHTML = `
+        <td>${item.amount}</td>
+        <td>${item.type}</td>
+        <td>${item.category}</td>
+        <td>${item.description}</td>
+        <td>${formatDate(item.date)}</td>
+        <td><button class="btn" onclick="deleteTransaction(this)">Delete</button></td>
         `;
-        transactionList.appendChild(transactionItem);
+        tableBody.appendChild(row);
     });
+
+
+
+}
+
+function deleteTransaction(button) {
+    const row = button.parentElement.parentElement; // Get the row of the button
+    removeTransactionFromDB(+row.id);
+    row.parentElement.removeChild(row); // Remove the row from the table
+}
+function removeTransactionFromDB(transactionId) {
+    const userId = +localStorage.getItem("userId")
+    fetch('/api/transaction/delete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                id: transactionId,
+                user_id: userId
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+        })
+        .catch(error => {
+            console.error('There was a problem with the fetch operation:', error);
+        });
+}
+
+function formatDate(dateString) {
+    const date = new Date(dateString); // Create a Date object from the date string
+    const day = String(date.getDate()).padStart(2, '0'); // Get the day and pad with leading zero if needed
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Get the month (0-indexed) and pad with leading zero
+    const year = date.getFullYear(); // Get the full year
+
+    return `${day}-${month}-${year}`; // Return the formatted date as DD-MM-YYYY
 }

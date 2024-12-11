@@ -34,11 +34,12 @@ body {
 }
 
 .main-content {
-    max-width: 1000px;
+    max-width: 1400px;
     margin: 20px auto;
 
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 50px;
 }
 
 section{
@@ -52,18 +53,6 @@ section{
 
 
 
-.transaction-display {
-    width: 30%; /* Adjust width as needed */
-    border-left: 1px solid #ccc; /* Optional: add a border for separation */
-    padding-left: 20px; /* Optional: add some padding */
-}
-
-.transaction-item {
-    margin-bottom: 10px;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-}
 
 
 
@@ -210,3 +199,30 @@ textarea {
 
 
 
+
+.transaction-display {
+    min-width: 540px;
+}
+
+.transaction-display table {
+    border-collapse: collapse;
+}
+
+.transaction-display th, .transaction-display td {
+    padding: 10px;
+    border: 1px solid #ddd; /* Border for table cells */
+    text-align: left; /* Align text to the left */
+}
+
+.transaction-display th {
+    background-color: var(--primary-color); /* Header background color */
+    color: #ffffff; /* Header text color */
+}
+
+.transaction-display tr:nth-child(even) {
+    background-color: #f9f9f9; /* Zebra striping for even rows */
+}
+
+.transaction-display tr:hover {
+    background-color: #f1f1f1; /* Highlight row on hover */
+}

@@ -90,9 +90,21 @@
     </section>
     <section class="transaction-display">
         <h2>Transactions</h2>
-        <div id="transaction-list">
-            <!-- Transactions will be dynamically added here -->
-        </div>
+        <table id="transaction-table">
+            <thead>
+                <tr>
+                    <th>Amount</th>
+                    <th>Type</th>
+                    <th>Category</th>
+                    <th>Description</th>
+                    <th>Date</th>
+                    <th>Action</th> <!-- Column for delete action -->
+                </tr>
+            </thead>
+            <tbody id="transaction-list">
+                <!-- Transactions will be dynamically added here -->
+            </tbody>
+        </table>
     </section>
 </main>
 <script src="../static/js/index_1.js"></script>
