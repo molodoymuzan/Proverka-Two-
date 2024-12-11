@@ -104,7 +104,7 @@ label {
 
 input[type="number"],
 input[type="text"],
-input[type="month"],
+input[type="date"],
 select,
 textarea {
     padding: 10px;
@@ -112,6 +112,49 @@ textarea {
     border-radius: var(--border-radius);
     width: 100%;
     box-sizing: border-box;
+    transition: border-color 0.3s, box-shadow 0.3s; /* Smooth transition for focus and hover */
+}
+
+/*input[type="number"],*/
+/*input[type="text"],*/
+/*input[type="date"],*/
+/*select,*/
+/*textarea {*/
+/*    padding: 10px;*/
+/*    border: 1px solid #ccc;*/
+/*    border-radius: var(--border-radius);*/
+/*    width: 100%;*/
+/*    box-sizing: border-box;*/
+/*}*/
+
+
+input[type="date"] {
+    background-color: #f9f9f9; /* Light background color */
+    color: var(--text-color); /* Text color */
+}
+
+/* Change border color on focus */
+input[type="date"]:focus {
+    border-color: #007bff; /* Change to a blue border on focus */
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.5); /* Add a subtle shadow */
+    outline: none; /* Remove default outline */
+}
+
+/* Change border color on hover */
+input[type="date"]:hover {
+    border-color: #007bff; /* Change to a blue border on hover */
+}
+
+/* Style for placeholder text */
+input[type="date"]::placeholder {
+    color: #aaa; /* Light gray color for placeholder */
+}
+
+/* Optional: Style for the date picker icon */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    background: url('path/to/your/icon.svg') no-repeat center; /* Custom icon */
+    background-size: 16px; /* Size of the icon */
+    cursor: pointer; /* Change cursor to pointer */
 }
 
 textarea {

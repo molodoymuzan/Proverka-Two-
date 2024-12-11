@@ -19,10 +19,6 @@
             </div>
         </div>
     </section>
-    <section class="transactions-section">
-        <h2>Transactions</h2>
-        <ul class="transaction-list" id="transaction-list"></ul>
-    </section>
     <section class="add-transaction-section">
         <h2>Add Transaction</h2>
         <form id="transaction-form" class="transaction-form">
@@ -39,15 +35,52 @@
             </div>
             <div class="form-group">
                 <label for="category">Category</label>
-                <input type="text" name="category" id="category" placeholder="Category" required>
+                <label for="category">Category</label>
+                <select name="category" id="category" required>
+                    <optgroup label="Expenses">
+                        <option value="groceries">Продукты питания</option>
+                        <option value="utilities">Коммунальные услуги</option>
+                        <option value="transport">Транспорт</option>
+                        <option value="entertainment">Развлечения</option>
+                        <option value="clothing">Одежда и обувь</option>
+                        <option value="health">Здоровье и медицина</option>
+                        <option value="education">Образование</option>
+                        <option value="dining">Кафе и рестораны</option>
+                        <option value="beauty">Косметика и парикмахерские услуги</option>
+                        <option value="home">Домашние расходы</option>
+                        <option value="travel">Путешествия</option>
+                        <option value="fitness">Спорт и фитнес</option>
+                        <option value="electronics">Техника и электроника</option>
+                        <option value="gifts">Подарки и благотворительность</option>
+                        <option value="insurance">Страхование</option>
+                    </optgroup>
+                    <optgroup label="Income">
+                        <option value="salary">Зарплата</option>
+                        <option value="bonus">Премии и бонусы</option>
+                        <option value="dividends">Дивиденды</option>
+                        <option value="gifts_income">Подарки</option>
+                        <option value="debt_repayment">Возврат долгов</option>
+                        <option value="asset_sale">Продажа имущества</option>
+                        <option value="investments">Инвестиции</option>
+                        <option value="freelance">Фриланс и подработка</option>
+                        <option value="benefits">Государственные пособия</option>
+                        <option value="interest">Проценты по вкладам</option>
+                        <option value="inheritance">Наследство</option>
+                        <option value="tax_refund">Возврат налогов</option>
+                        <option value="scholarship">Стипендии</option>
+                        <option value="rental_income">Доход от аренды</option>
+                        <option value="other_income">Прочие доходы</option>
+                    </optgroup>
+                </select>
+
             </div>
             <div class="form-group">
                 <label for="description">Description</label>
                 <textarea name="description" id="description" placeholder="Add a description"></textarea>
             </div>
             <div class="form-group">
-                <label for="month">Month</label>
-                <input type="month" name="month" id="month" required>
+                <label for="date">Month</label>
+                <input type="date" name="date" id="date" required>
             </div>
             <button type="submit" class="btn">Add Transaction</button>
         </form>

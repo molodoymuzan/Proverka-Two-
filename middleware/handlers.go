@@ -99,6 +99,34 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(id)
 }
 
+func AddTransaction(w http.ResponseWriter, r *http.Request) {
+	var transaction models.Transaction
+
+	db := createConnection()
+	// create the postgres db connection
+	// close the db connection
+	defer db.Close()
+
+	// Декодируем JSON из тела запроса
+	err := json.NewDecoder(r.Body).Decode(&transaction)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+	fmt.Print(transaction)
+	_, err = db.Exec("INSERT INTO transactions (user_id, amount, type, category, description, date) VALUES ($1, $2, $3, $4, $5, $6)",
+		transaction.UserID, transaction.Amount, transaction.Type, transaction.Category, transaction.Description, transaction.Date)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Возвращаем успешный ответ
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(transaction)
+}
+
 // GetAllUser will return all the users
 func GetAllUser(w http.ResponseWriter, r *http.Request) {
 
@@ -181,13 +209,12 @@ func DeleteUser(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(res)
 }
 
-//------------------------- handler functions ----------------
+// ------------------------- handler functions ----------------
 // insert one user in the DB
 func insertUser(user models.User) int64 {
 
-	// create the postgres db connection
 	db := createConnection()
-
+	// create the postgres db connection
 	// close the db connection
 	defer db.Close()
 
@@ -215,7 +242,7 @@ func insertUser(user models.User) int64 {
 // get one user from the DB by its userid
 func getUser(user models.User) (int64, error) {
 	var id int64
-	
+
 	// create the postgres db connection
 	db := createConnection()
 
