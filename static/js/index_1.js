@@ -11,7 +11,7 @@ function logout() {
     window.location.href = 'login.html';
 }
 async function fetchUserData() {
-    // Get user ID from local storage
+    
     const userId = localStorage.getItem('userId'); // Make sure 'userId' is set in local storage
 
     if (!userId) {
@@ -99,7 +99,7 @@ document.querySelector("#logout").addEventListener("click", logout);
 
 const tableBody = document.getElementById('transaction-list');
 const transactionForm = document.getElementById("transaction-form");
-
+const canvas = document.getElementById('circle');
 
 
 function fetchTransactions() {
@@ -128,6 +128,9 @@ function fetchTransactions() {
 
 
 function displayTransactions(transactions) {
+    let totalIncome = 0;
+    let totalExpenses = 0;
+
     transactions.forEach(item => {
         const row = document.createElement('tr');
 
@@ -141,10 +144,14 @@ function displayTransactions(transactions) {
         <td><button class="btn" onclick="deleteTransaction(this)">Delete</button></td>
         `;
         tableBody.appendChild(row);
+
+        if (item.type === "income")
+            totalIncome += +item.amount
+        else
+            totalExpenses += +item.amount
     });
 
-
-
+    displayCircle(totalIncome, totalExpenses)
 }
 
 function deleteTransaction(button) {
@@ -155,15 +162,15 @@ function deleteTransaction(button) {
 function removeTransactionFromDB(transactionId) {
     const userId = +localStorage.getItem("userId")
     fetch('/api/transaction/delete', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                id: transactionId,
-                user_id: userId
-            })
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            id: transactionId,
+            user_id: userId
         })
+    })
         .then(response => {
             if (!response.ok) {
                 throw new Error('Network response was not ok');
@@ -181,4 +188,34 @@ function formatDate(dateString) {
     const year = date.getFullYear(); // Get the full year
 
     return `${day}-${month}-${year}`; // Return the formatted date as DD-MM-YYYY
+}
+
+function displayCircle(income, expenses) {
+    const total = income + expenses;
+
+    if (total === 0) {
+        console.log("Total income and expenses cannot be zero.");
+        return;
+    }
+
+    const incomeRatio = income / total; 
+    const expensesRatio = expenses / total; 
+    const ctx = canvas.getContext('2d');
+    
+    ctx.beginPath();
+    ctx.moveTo(100, 100); 
+    ctx.arc(100, 100, 100, -Math.PI / 2, -Math.PI / 2 + (Math.PI * 2 * incomeRatio)); 
+    ctx.lineTo(100, 100); 
+    ctx.fillStyle = '#4caf50'; 
+    ctx.fill();
+    ctx.closePath();
+
+    
+    ctx.beginPath();
+    ctx.moveTo(100, 100); 
+    ctx.arc(100, 100, 100, -Math.PI / 2 + (Math.PI * 2 * incomeRatio), -Math.PI / 2 + (Math.PI * 2 * (incomeRatio + expensesRatio))); 
+    ctx.lineTo(100, 100); 
+    ctx.fillStyle = '#ff2424'; 
+    ctx.fill();
+    ctx.closePath();
 }

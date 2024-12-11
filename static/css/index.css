@@ -63,28 +63,9 @@ section{
     margin-bottom: 20px;
 }
 
-.circle{
+#circle{
+    display: block;
     margin: auto;
-}
-
-.circle, .inner-circle {
-    width: 160px;
-    height: 160px;
-    border-radius: 50%;
-    background: var(--primary-color);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: #ffffff;
-    font-size: 1.5rem;
-}
-
-.circle .inner-circle {
-    width: 130px;
-    height: 130px;
-    border-radius: 50%;
-    background: #ffffff;
-    color: var(--primary-color);
 }
 
 h2 {
