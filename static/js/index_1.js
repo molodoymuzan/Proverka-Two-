@@ -48,10 +48,11 @@ document.addEventListener("DOMContentLoaded", function() {
     transactionForm.addEventListener("submit", async function(event) {
         event.preventDefault(); // Prevent the default form submission
 
-        // Gather form data
+        const id = +localStorage.getItem("userId");
+
         const formData = new FormData(transactionForm);
         const transactionData = {
-            user_id: 1, // Replace with actual user ID
+            user_id: id, // Replace with actual user ID
             amount: parseFloat(formData.get("amount")),
             type: formData.get("type"),
             category: formData.get("category"),
@@ -90,6 +91,7 @@ document.addEventListener("DOMContentLoaded", function() {
         transactionList.appendChild(listItem);
     }
 });
+document.addEventListener("DOMContentLoaded", fetchTransactions);
 document.querySelector("#logout").addEventListener("click", logout);
 
 
@@ -98,3 +100,47 @@ document.querySelector("#logout").addEventListener("click", logout);
 const transactionList = document.getElementById("transaction-list");
 const transactionForm = document.getElementById("transaction-form");
 
+
+
+function fetchTransactions(userId) {
+    const id = +localStorage.getItem("userId") 
+
+    fetch('/api/transaction/get', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({id: id})
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(transactions => {
+        displayTransactions(transactions);
+    })
+    .catch(error => {
+        console.error('There was a problem with the fetch operation:', error);
+    });
+}
+
+// Function to display transactions in the transaction list
+function displayTransactions(transactions) {
+    const transactionList = document.getElementById('transaction-list');
+    transactionList.innerHTML = ''; // Clear existing transactions
+
+    transactions.forEach(transaction => {
+        const transactionItem = document.createElement('div');
+        transactionItem.className = 'transaction-item';
+        transactionItem.innerHTML = `
+            <p><strong>Amount:</strong> ${transaction.amount}</p>
+            <p><strong>Type:</strong> ${transaction.type}</p>
+            <p><strong>Category:</strong> ${transaction.category}</p>
+            <p><strong>Description:</strong> ${transaction.description}</p>
+            <p><strong>Date:</strong> ${transaction.date}</p>
+        `;
+        transactionList.appendChild(transactionItem);
+    });
+}

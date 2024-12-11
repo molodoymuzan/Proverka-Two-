@@ -34,18 +34,48 @@ body {
 }
 
 .main-content {
-    max-width: 800px;
+    max-width: 1000px;
     margin: 20px auto;
+
+    display: flex;
+    justify-content: space-between;
+}
+
+section{
     padding: 20px;
     background: #ffffff;
     border-radius: var(--border-radius);
     box-shadow: 0 0 10px var(--shadow-color);
+
+    min-width: 400px;
 }
+
+
+
+.transaction-display {
+    width: 30%; /* Adjust width as needed */
+    border-left: 1px solid #ccc; /* Optional: add a border for separation */
+    padding-left: 20px; /* Optional: add some padding */
+}
+
+.transaction-item {
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+
+
 
 .month-display {
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
+}
+
+.circle{
+    margin: auto;
 }
 
 .circle, .inner-circle {
@@ -66,10 +96,6 @@ body {
     border-radius: 50%;
     background: #ffffff;
     color: var(--primary-color);
-}
-
-.transactions-section, .add-transaction-section {
-    margin-top: 20px;
 }
 
 h2 {
@@ -173,3 +199,14 @@ textarea {
 .btn:hover {
     background: #388e3c; /* Darker shade of green for hover effect */
 }
+
+
+
+
+
+
+
+
+
+
+

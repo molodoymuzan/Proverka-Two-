@@ -16,14 +16,13 @@
     <button id="logout" class="btn">Log out</button>
 </header>
 <main class="main-content">
-    <section class="month-display">
+
+    <section class="add-transaction-section">
         <div class="circle">
             <div class="inner-circle">
                 <span class="month-name">December</span>
             </div>
         </div>
-    </section>
-    <section class="add-transaction-section">
         <h2>Add Transaction</h2>
         <form id="transaction-form" class="transaction-form">
             <div class="form-group">
@@ -88,6 +87,12 @@
             </div>
             <button type="submit" class="btn">Add Transaction</button>
         </form>
+    </section>
+    <section class="transaction-display">
+        <h2>Transactions</h2>
+        <div id="transaction-list">
+            <!-- Transactions will be dynamically added here -->
+        </div>
     </section>
 </main>
 <script src="../static/js/index_1.js"></script>

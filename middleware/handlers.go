@@ -121,9 +121,7 @@ func GetUserById(w http.ResponseWriter, r *http.Request) {
 	sqlStatement := `SELECT name FROM users WHERE user_id=$1`
 
 	err = db.QueryRow(sqlStatement, id).Scan(&user.Name)
-	fmt.Print(user)
-	fmt.Print(err)
-	fmt.Print(err)
+
 	if err != nil {
 		http.Error(w, "User not found", http.StatusNotFound)
 		return
@@ -163,10 +161,10 @@ func AddTransaction(w http.ResponseWriter, r *http.Request) {
 }
 
 func GetTransaction(w http.ResponseWriter, r *http.Request) {
-	var id int64
-	var transaction models.Transaction
+	var user models.User
+	transactions := []models.Transaction{}
 
-	err := json.NewDecoder(r.Body).Decode(&id)
+	err := json.NewDecoder(r.Body).Decode(&user)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
@@ -176,16 +174,32 @@ func GetTransaction(w http.ResponseWriter, r *http.Request) {
 	db := createConnection()
 	defer db.Close()
 
-	_, err = db.Exec("SELECT  amount, type, category, description, date from transactions WHERE=$1")
+	query := `SELECT amount, type, category, description, date FROM transactions WHERE user_id = $1`
+	rows, err := db.Query(query, user.ID)
+
+	fmt.Print(user.ID)
+	fmt.Print(rows)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
+	
 
-	// Возвращаем успешный ответ
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(transaction)
+	for rows.Next() {
+        var transaction models.Transaction
+		err := rows.Scan(&transaction.UserID, &transaction.Amount, &transaction.Type, &transaction.Category, &transaction.Description, &transaction.Date);
+        
+		if err != nil {
+            http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+        }
+		defer rows.Close()
+
+        transactions = append(transactions, transaction)
+    }
+
+	json.NewEncoder(w).Encode(transactions)
 }
 
 // GetAllUser will return all the users
