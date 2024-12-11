@@ -162,6 +162,32 @@ func AddTransaction(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(transaction)
 }
 
+func GetTransaction(w http.ResponseWriter, r *http.Request) {
+	var id int64
+	var transaction models.Transaction
+
+	err := json.NewDecoder(r.Body).Decode(&id)
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	db := createConnection()
+	defer db.Close()
+
+	_, err = db.Exec("SELECT  amount, type, category, description, date from transactions WHERE=$1")
+
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	// Возвращаем успешный ответ
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode(transaction)
+}
+
 // GetAllUser will return all the users
 func GetAllUser(w http.ResponseWriter, r *http.Request) {
 
